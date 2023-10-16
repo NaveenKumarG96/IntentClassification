@@ -8,8 +8,8 @@ class SequenceClassifier(nn.Module):
         self.fc = nn.Linear(hidden_dim, num_classes)
 
     def forward(self, x):
-        lstm_out, _ = self.lstm(x) #[1,16,768]  64, 4
-        lstm_out = lstm_out[:, -1, :]  # Take the output from the last time step [[-1.0242,  0.2037, -1.7949,  3.6168]]
+        lstm_out, _ = self.lstm(x) #passing the embeddings through lstm layer
+        lstm_out = lstm_out[:, -1, :]  # Taking the output from the last time step and passing through Linear layer to map to 4 classes.
         output = self.fc(lstm_out)
 
         output_probs = torch.softmax(output, dim=1)
