@@ -4,27 +4,32 @@ from pydantic import BaseModel
 import torch
 from transformers import BertTokenizer, BertModel
 import torch.nn as nn
-import training
-from custom_classifier import SequenceClassifier
+from training.custom_classifier import SequenceClassifier
+from fastapi import FastAPI, Request, HTTPException
+from fastapi.responses import JSONResponse
+import sys,os
 
+full_dir = os.path.join(os.path.dirname(__file__), 'training')
+sys.path.append(full_dir)
 
 app = FastAPI() 
 
 bert_model = BertModel.from_pretrained('bert-base-uncased')
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 
-# label_mapping = {"Churn": 0, "Escalation": 1,'Churn and Escalation':2, "No Intent Found": 3, }
-
-
+#Trained SequeneClassifier model for classification 
 
 classifier = torch.load('./data/custom.pth').eval()
 
+#pdb.set_trace()
 
 class QueryRequest(BaseModel):
     query: str
 
+#print(QueryRequest.model_validate({'query': '1'}))
 # Define a function to perform text classification
 def classify_text(text):
+
     inputs = tokenizer(text, 
         padding=True,
         truncation=True,
@@ -52,15 +57,14 @@ async def get_index():
     return FileResponse("form.html")
 
 # Route to do intent classifier post call
-@app.post("/intent/")
+@app.post("/intent")
 async def classify(query_data: QueryRequest):
     user_query = query_data.query
     predicted_intent = classify_text(user_query) 
 
     return {"intent": predicted_intent}
 
-@app.post("/api/")
-async def classify_api(query: str = Form(...)):
-
-    predicted_intent = classify_text(query)
+@app.post("/api")
+async def classify_api(query: QueryRequest):
+    predicted_intent = classify_text(query.query)
     return {"intent": predicted_intent}

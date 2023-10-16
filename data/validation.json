@@ -1,0 +1,9 @@
+[
+    {"text": "I'm not sure if I'll continue using this IT support service.", "intent": "Churn"},
+    {"text": "I am so fed up with your service. I think I want to unsubscribe.", "intent": "Churn"},
+    {"text": "I'm getting nowhere with you. I need a competent representative who can help.", "intent": "Escalation"},
+    {"text": "The service I received from your company was unsatisfactory, and I have started looking into other services out there. I insist on speaking with a senior representative or someone in upper management who can rectify the situation and restore my confidence in your company.", "intent": "Churn and Escalation"},
+    {"text": "How can I change my email address in the account settings?", "intent": "No Intent Found"},
+    {"text": "I've been a loyal customer for years, but recently I've been extremely frustrated with your poor service and thinking of opting out. I want to discuss this issue with your team leader, someone who can understand the complexities and provide an appropriate solution.", "intent": "Churn and Escalation"},
+    {"text": "Is there a mobile app available for your service?", "intent": "No Intent Found"}
+]
