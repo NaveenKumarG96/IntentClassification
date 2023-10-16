@@ -21,13 +21,10 @@ tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 
 classifier = torch.load('./data/custom.pth').eval()
 
-#pdb.set_trace()
 
 class QueryRequest(BaseModel):
     query: str
 
-#print(QueryRequest.model_validate({'query': '1'}))
-# Define a function to perform text classification
 def classify_text(text):
 
     inputs = tokenizer(text, 
@@ -64,7 +61,7 @@ async def classify(query_data: QueryRequest):
 
     return {"intent": predicted_intent}
 
-@app.post("/api")
-async def classify_api(query: QueryRequest):
-    predicted_intent = classify_text(query.query)
-    return {"intent": predicted_intent}
+# @app.post("/api")
+# async def classify_api(query: QueryRequest):
+#     predicted_intent = classify_text(query.query)
+#     return {"intent": predicted_intent}

@@ -42,8 +42,8 @@ def preprocess_data(data, tokenizer, label_mapping):
 
     return input_ids, attention_mask, labels
 
-#Using the pretrained bert models for tokenising and embedding creation.
 
+#Using the pretrained bert models for tokenising and embedding creation.
 tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
 bert_model = BertModel.from_pretrained("bert-base-uncased", num_labels=len(label_mapping))
 
@@ -86,8 +86,8 @@ custom_classifier = SequenceClassifier(input_dim=bert_model.config.hidden_size, 
 criterion = nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(custom_classifier.parameters(), lr=1e-3)
 
-# Fine-tuning custom classifier
-for epoch in range(15):
+# Training custom classifier model
+for epoch in range(20):
     custom_classifier.train()
     total_loss = 0.0
     for batch in train_loader:
