@@ -31,8 +31,7 @@ def preprocess_data(data, tokenizer, label_mapping):
 
     tokenized_data = tokenizer(
         input_texts,
-        padding="max_length",
-        max_length=tokenizer.model_max_length,
+        padding=True,
         truncation=True,
         return_tensors="pt",
     )
@@ -79,13 +78,8 @@ test_loader = DataLoader(test_dataset, batch_size=batch_size)
 num_labels = len(label_mapping)
 
 
-
-
-
 # Load the pre-trained BERT model
 bert_model = BertModel.from_pretrained("bert-base-uncased", num_labels=len(label_mapping))
-
-
 
 # Evaluation on the test set
 test_true_labels = []

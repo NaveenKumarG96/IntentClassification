@@ -13,18 +13,30 @@ label_mapping = {"Churn": 0, "Escalation": 1,'Churn and Escalation':2, "No Inten
 
 custom_classifier = torch.load('../data/custom.pth').eval()
 
+def preprocess_data(data, tokenizer):
+    input_texts = data
+    
+
+    tokenized_data = tokenizer(
+        input_texts,
+        padding=True,
+        truncation=True,
+        return_tensors="pt",
+    )
+
+    input_ids = tokenized_data["input_ids"]
+    attention_mask = tokenized_data["attention_mask"]
+
+    return input_ids, attention_mask
+
 
 def classify_text(text):
     # Tokenize the text
-    inputs = tokenizer(text, 
-        text,
-        padding=True,
-        truncation=True,
-        return_tensors="pt",)
+    input_ids, attention_mask = preprocess_data(text,tokenizer)
 
     # Get BERT embeddings
     with torch.no_grad():
-        bert_outputs = bert_model(**inputs)
+        bert_outputs = bert_model(input_ids=input_ids, attention_mask=attention_mask)
         bert_embeddings = bert_outputs.last_hidden_state
 
     # Pass BERT embeddings through the custom classifier
@@ -40,7 +52,7 @@ def classify_text(text):
     return predicted_label 
 
 
-text_input = "I want to subscribe."
+text_input = "I'm  leaving"
 predicted_intent = classify_text(text_input)
 print(f"Predicted Intent: {predicted_intent}")
 

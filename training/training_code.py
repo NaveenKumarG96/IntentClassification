@@ -18,7 +18,7 @@ def load_data(data_path):
     return data
 
 train_data = load_data(train_data_path)
-validation_data = load_data(validation_data_path)
+
 test_data = load_data(test_data_path)
 
 
@@ -84,10 +84,10 @@ custom_classifier = SequenceClassifier(input_dim=bert_model.config.hidden_size, 
 
 # Defining loss function and optimizer
 criterion = nn.CrossEntropyLoss()
-optimizer = torch.optim.Adam(custom_classifier.parameters(), lr=1e-3)
+optimizer = torch.optim.Adam(custom_classifier.parameters(), lr=1e-2) 
 
 # Training custom classifier model
-for epoch in range(20):
+for epoch in range(15):
     custom_classifier.train()
     total_loss = 0.0
     for batch in train_loader:

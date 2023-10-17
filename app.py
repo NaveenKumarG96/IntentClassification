@@ -25,29 +25,45 @@ classifier = torch.load('./data/custom.pth').eval()
 class QueryRequest(BaseModel):
     query: str
 
-def classify_text(text):
+def preprocess_data(data, tokenizer):
+    input_texts = data
+    
 
-    inputs = tokenizer(text, 
+    tokenized_data = tokenizer(
+        input_texts,
         padding=True,
         truncation=True,
-        return_tensors="pt",)
+        return_tensors="pt",
+    )
 
-    #BERT embeddings
+    input_ids = tokenized_data["input_ids"]
+    attention_mask = tokenized_data["attention_mask"]
+
+    return input_ids, attention_mask
+
+
+def classify_text(text):
+    # Tokenize the text
+    input_ids, attention_mask = preprocess_data(text,tokenizer)
+
+    # Get BERT embeddings
     with torch.no_grad():
-        bert_outputs = bert_model(**inputs)
+        bert_outputs = bert_model(input_ids=input_ids, attention_mask=attention_mask)
         bert_embeddings = bert_outputs.last_hidden_state
 
-    # Passing BERT embeddings through the custom classifier
-    outputs = classifier(bert_embeddings)
+    # Pass BERT embeddings through the custom classifier
+    custom_outputs = classifier(bert_embeddings)
 
     
-    _, predicted_class = outputs.max(1)
-    print(outputs)
-
-    intent_labels = {0: "Churn", 1: "Escalation", 2: "Churn and Escalation" , 3:'No Intent Found'}
+    _, predicted_class = custom_outputs.max(1)
+    print(custom_outputs)
+    
+    intent_labels = {0: "Churn", 1: "Escalation", 2: "Churn and Escalation'" , 3:'No Intent Found'}
     predicted_label = intent_labels[predicted_class.item()]
 
     return predicted_label 
+
+
 
 @app.get("/")
 async def get_index():
